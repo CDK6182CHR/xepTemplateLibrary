@@ -1,7 +1,11 @@
+#include <iostream>
+#include <initializer_list>
+
+
 /// <summary>
 /// 具有固定最大长度的最小堆
+/// 已经测试对存在相同数据的应该没问题
 /// </summary>
-/// <typeparam name="T"></typeparam>
 template <typename T>
 class MinHeap {
 	const int max_size;
@@ -19,6 +23,9 @@ public:
 	}
 	inline T& top() {
 		return data[0];
+	}
+	inline bool empty()const {
+		return size == 0;
 	}
 private:
 	void init_heap();   //这个没必要写
@@ -102,12 +109,4 @@ void MinHeap<T>::pop()
 		throw "EMPTY HEAP";
 	data[0] = std::move(data[--size]);  //直接覆盖！
 	sift_down(0);
-}
-
-int int_cmp(const void* x, const void* y)
-{
-	int a = *((const int*)x);
-	int b = *((const int*)y);
-	return a - b;
-
 }

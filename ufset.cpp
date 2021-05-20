@@ -6,7 +6,6 @@
 /// 具有固定长度的UFSet 数组实现
 /// 暂时不考虑保存数据的问题 下标就是数据
 /// </summary>
-/// <typeparam name="T"></typeparam>
 class UFSet {
 	int* data;
 	int size;
