@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdio>
 #include <utility>
+#include <algorithm>
 
 /// <summary>
 /// 有向图的邻接表表示。暂时只考虑插入的情况。
@@ -8,35 +9,40 @@
 /// </summary>
 /// <typeparam name="V"></typeparam>
 /// <typeparam name="E"></typeparam>
-template <typename V,typename E>
+template <typename V, typename E>
 class Graph {
 public:
 	struct Edge;
 	struct Vertex {
 		V vdata;
 		Edge* adj;
-		Vertex():vdata(),adj(nullptr){}
+		Vertex() :vdata(), adj(nullptr) {}
 	};
 	struct Edge {
 		E edata;
 		int to;
 		Edge* link;
-		Edge(int to_) :edata(), to(to_), link(nullptr){}
-		Edge(int to_,const E& data):edata(data),to(to_),link(nullptr){}
+		Edge(int to_) :edata(), to(to_), link(nullptr) {}
+		Edge(int to_, const E& data) :edata(data), to(to_), link(nullptr) {}
 	};
 
 	Graph(int size_);
 	~Graph();
-	
+
 	Edge* add_edge(int from, int to, const E& data);
 	//添加双向边
 	void add_biedge(int a, int b, const E& data);
 
 	Edge* first_edge(int v);
+	inline const Edge* first_edge(int v)const {
+		return const_cast<Graph*>(this)->first_edge(v);
+	}
 
 	inline int get_size()const {
 		return size;
 	}
+
+	void get_indegrees(int* indeg)const;
 
 	Graph(const Graph&) = delete;
 	Graph(Graph&&) = delete;
@@ -49,7 +55,7 @@ protected:
 };
 
 template<typename V, typename E>
-Graph<V, E>::Graph(int size_):size(size_)
+Graph<V, E>::Graph(int size_) :size(size_)
 {
 	vertices = new Vertex[size];
 }
@@ -75,7 +81,7 @@ Graph<V, E>::~Graph()
 
 // 注意 这是插入到第一个
 template<typename V, typename E>
-typename Graph<V,E>::Edge* Graph<V, E>::add_edge(int from, int to, const E& data)
+typename Graph<V, E>::Edge* Graph<V, E>::add_edge(int from, int to, const E& data)
 {
 	Edge* e = new Edge(to, data);
 	e->link = vertices[from].adj;
@@ -91,7 +97,20 @@ void Graph<V, E>::add_biedge(int a, int b, const E& data)
 }
 
 template<typename V, typename E>
-typename Graph<V,E>::Edge* Graph<V, E>::first_edge(int v)
+typename Graph<V, E>::Edge* Graph<V, E>::first_edge(int v)
 {
 	return vertices[v].adj;
+}
+
+template<typename V, typename E>
+void Graph<V, E>::get_indegrees(int* indeg) const
+{
+	std::fill(indeg, indeg + size, 0);
+	for (int i = 0; i < size; i++) {
+		auto* e = vertices[i].adj;
+		while (e) {
+			indeg[e->to]++;
+			e = e->link;
+		}
+	}
 }
