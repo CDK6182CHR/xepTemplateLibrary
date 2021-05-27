@@ -62,9 +62,9 @@ int UFSet::find(int x) const
 int UFSet::find(int x)
 {
 	int root = static_cast<const UFSet*>(this)->find(x);
-	while (data[x] >= 0) {
-		x = data[x];
+	while (x != root) {
 		data[x] = root;
+		x = data[x];
 	}
 	return root;
 }
