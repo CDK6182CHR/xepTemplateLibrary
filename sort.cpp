@@ -44,6 +44,43 @@ void insert_sort(T x[], int left, int right)
 	}
 }
 
+template <typename T>
+void __max_heap_down(T* x, const int n, int start)
+{
+	int i = start;   //指向当前根节点
+	int j = 2 * start + 1;   //指向当前左子结点
+	while (j < n) {
+		if (j + 1 < n && x[j] < x[j + 1]) {
+			j++;
+		}
+		//j指向子女结点中较大的那个
+		if (x[i] < x[j]) {
+			std::swap(x[i], x[j]);
+			i = j;
+			j = 2 * i + 1;
+		}
+		else 
+			break;
+	}
+}
+
+
+template <typename T>
+void heap_sort(T* x, int left, int right)
+{
+	T* hp = x + left;
+	int n = right - left;
+	//初始化堆，从最后一个元素的父节点开始
+	for (int i = (n - 2) / 2; i >= 0; i--) {
+		__max_heap_down(hp, n, i);
+	}
+	//从最后一个元素开始，倒排
+	for (int i = n - 1; i >= 0; i--) {
+		std::swap(hp[0], hp[i]);
+		__max_heap_down(hp, i, 0);
+	}
+}
+
 
 #include <algorithm>
 #include <time.h>
