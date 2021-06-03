@@ -7,3 +7,5 @@ Implementation of classic data structure and some algorithm for OJ of Data Struc
 
 一些数据结构仅根据要求实现了部分功能；有的功能不允许操作或者声明了函数而没写实现。
 
+注意编译器必须支持`C++11`标准。
+

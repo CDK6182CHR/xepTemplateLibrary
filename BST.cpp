@@ -6,7 +6,7 @@
 
 /// <summary>
 /// 2021.06.03
-/// 标准二岔搜索树。暂不考虑数据域
+/// 标准二叉搜索树。暂不考虑数据域
 /// </summary>
 template <typename K>
 class BST {
