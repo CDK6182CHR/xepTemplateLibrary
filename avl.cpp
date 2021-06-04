@@ -4,7 +4,6 @@
 /// <summary>
 /// 单链表实现版本 链式栈
 /// </summary>
-/// <typeparam name="T"></typeparam>
 template <typename T>
 class Stack {
 public:
@@ -87,8 +86,6 @@ T& Stack<T>::top()
 /// <summary>
 /// AVL树标准实现
 /// </summary>
-/// <typeparam name="K"></typeparam>
-/// <typeparam name="V"></typeparam>
 template <typename K,typename V>
 class AVLTree {
 public:

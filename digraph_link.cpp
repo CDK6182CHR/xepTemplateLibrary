@@ -7,8 +7,6 @@
 /// 有向图的邻接表表示。暂时只考虑插入的情况。
 /// 只维护出边而不维护入边。
 /// </summary>
-/// <typeparam name="V"></typeparam>
-/// <typeparam name="E"></typeparam>
 template <typename V, typename E>
 class Graph {
 public:

@@ -4,7 +4,6 @@
 /// 固定数组大小的SparseMatrix
 /// 采用三元组的标准实现
 /// </summary>
-/// <typeparam name="T"></typeparam>
 template <typename T>
 class SparseMatrix {
 	struct Item {

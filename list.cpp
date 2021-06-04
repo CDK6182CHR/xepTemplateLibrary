@@ -3,7 +3,6 @@
 /// <summary>
 /// 单链表的实现
 /// </summary>
-/// <typeparam name="T"></typeparam>
 template <typename T>
 class List {
 public:

@@ -2,7 +2,6 @@
 /// <summary>
 /// 单链表实现版本 链式栈
 /// </summary>
-/// <typeparam name="T"></typeparam>
 template <typename T>
 class Stack {
 public:

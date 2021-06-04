@@ -7,8 +7,6 @@
 /// 具有固定结点数的有向图的邻接多重表实现  或十字链表
 /// 仍然采用int在内部表示结点
 /// </summary>
-/// <typeparam name="V"></typeparam>
-/// <typeparam name="E"></typeparam>
 template <typename V, typename E>
 class CrossGraph {
 public:
