@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <utility>
 
@@ -8,7 +9,7 @@
 /// </summary>
 /// <typeparam name="V"></typeparam>
 /// <typeparam name="E"></typeparam>
-template <typename V,typename E>
+template <typename V, typename E>
 class CrossGraph {
 public:
 	//表示从v1到v2的有向边
@@ -17,15 +18,15 @@ public:
 		int v1, v2;
 		Edge* path1;   //出边表
 		Edge* path2;   //入边表
-		Edge():edata(),v1(),v2(),path1(nullptr),path2(nullptr){}
-		Edge(int v1_,int v2_,const E& data):edata(data),v1(v1_),v2(v2_),
-			path1(nullptr),path2(nullptr){}
+		Edge() :edata(), v1(), v2(), path1(nullptr), path2(nullptr) {}
+		Edge(int v1_, int v2_, const E& data) :edata(data), v1(v1_), v2(v2_),
+			path1(nullptr), path2(nullptr) {}
 	};
 	struct Vertex {
 		V vdata;
 		Edge* ined;   //入边表
 		Edge* outed;   //出边表
-		Vertex():vdata(),ined(nullptr),outed(nullptr){}
+		Vertex() :vdata(), ined(nullptr), outed(nullptr) {}
 	};
 
 	CrossGraph(int size_);
@@ -54,6 +55,8 @@ public:
 		return size;
 	}
 
+	Edge* get_edge(int u, int v);
+
 	CrossGraph(const CrossGraph&) = delete;
 	CrossGraph(CrossGraph&&) = delete;
 	CrossGraph& operator=(const CrossGraph&) = delete;
@@ -65,7 +68,7 @@ protected:
 };
 
 template<typename V, typename E>
-CrossGraph<V, E>::CrossGraph(int size_):size(size_)
+CrossGraph<V, E>::CrossGraph(int size_) :size(size_)
 {
 	vertices = new Vertex[size];
 }
@@ -91,8 +94,8 @@ CrossGraph<V, E>::~CrossGraph() noexcept
 
 //注意 插入到各个边的链表的第一位
 template<typename V, typename E>
-typename CrossGraph<V,E>::Edge* 
-	CrossGraph<V, E>::add_edge(int from, int to, const E& data)
+typename CrossGraph<V, E>::Edge*
+CrossGraph<V, E>::add_edge(int from, int to, const E& data)
 {
 	auto e = new Edge(from, to, data);
 	e->path1 = vertices[from].outed;
@@ -108,3 +111,16 @@ void CrossGraph<V, E>::add_biedge(int x, int y, const E& data)
 	add_edge(x, y, data);
 	add_edge(y, x, data);
 }
+
+template<typename V, typename E>
+typename CrossGraph<V,E>::Edge* CrossGraph<V, E>::get_edge(int u, int v)
+{
+	auto* e = first_out_edge(u);
+	for (; e; e = e->path1) {
+		if (e->v2 == v) {
+			return e;
+		}
+	}
+	return nullptr;
+}
+
