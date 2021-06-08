@@ -2,6 +2,7 @@
 #include <utility>
 #include <stdint.h>
 #include <limits>
+#include <type_traits>
 
 
 /// <summary>
@@ -10,7 +11,8 @@
 class BitSet {
 public:
 	using buffer_type = uint8_t;
-	
+	static_assert(std::is_unsigned<buffer_type>::value, "unsigned buffer type must be used!!");
+
 	BitSet(int size_);
 	BitSet(const BitSet& bs);
 	BitSet(BitSet&& bs)noexcept;
@@ -18,8 +20,10 @@ public:
 
 	BitSet& operator=(const BitSet& bs) = delete;
 	BitSet& operator=(BitSet&& bs)noexcept = delete;
-	
-	bool test(int i)const;
+
+	inline bool test(int i)const {
+		return buffer[get_buffer_pos(i)] & get_bit_one_buffer(i);
+	}
 	inline bool operator[](int i)const {
 		//note: not assignmentable
 		return test(i);
@@ -46,7 +50,7 @@ private:
 	static constexpr buffer_type
 		BUF_ONE = std::numeric_limits<buffer_type>::max(),
 		BUF_ZERO = std::numeric_limits<buffer_type>::min();
-	
+
 	static constexpr int get_buffer_pos(int i);
 	static constexpr buffer_type get_bit_one_buffer(int i);
 	static constexpr buffer_type get_bit_zero_buffer(int i);
@@ -57,14 +61,14 @@ BitSet::BitSet(int size_) :size(size_), bufsize((size_ - 1) / buf_bits + 1)
 	buffer = new buffer_type[bufsize];
 }
 
-BitSet::BitSet(const BitSet& bs):size(bs.size),bufsize(bs.bufsize)
+BitSet::BitSet(const BitSet& bs) : size(bs.size), bufsize(bs.bufsize)
 {
 	buffer = new buffer_type[bufsize];
 	std::copy(bs.buffer, bs.buffer + bufsize, buffer);
 }
 
-BitSet::BitSet(BitSet&& bs) noexcept:
-	size(bs.size),bufsize(bs.bufsize),buffer(bs.buffer)
+BitSet::BitSet(BitSet&& bs) noexcept :
+	size(bs.size), bufsize(bs.bufsize), buffer(bs.buffer)
 {
 	bs.buffer = nullptr;
 }
@@ -75,11 +79,6 @@ BitSet::~BitSet()
 		delete[] buffer;
 		buffer = nullptr;
 	}
-}
-
-bool BitSet::test(int i) const
-{
-	return buffer[get_buffer_pos(i)] & get_bit_one_buffer(i);
 }
 
 BitSet& BitSet::set(int i)

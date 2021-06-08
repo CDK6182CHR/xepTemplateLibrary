@@ -10,6 +10,7 @@
 class BitSet {
 public:
 	using buffer_type = uint8_t;
+	static_assert(std::is_unsigned<buffer_type>::value, "unsigned buffer type must be used!!");
 
 	BitSet(int size_);
 	BitSet(const BitSet& bs);
@@ -19,7 +20,9 @@ public:
 	BitSet& operator=(const BitSet& bs) = delete;
 	BitSet& operator=(BitSet&& bs)noexcept = delete;
 
-	bool test(int i)const;
+	inline bool test(int i)const {
+		return buffer[get_buffer_pos(i)] & get_bit_one_buffer(i);
+	}
 	inline bool operator[](int i)const {
 		//note: not assignmentable
 		return test(i);
@@ -75,11 +78,6 @@ BitSet::~BitSet()
 		delete[] buffer;
 		buffer = nullptr;
 	}
-}
-
-bool BitSet::test(int i) const
-{
-	return buffer[get_buffer_pos(i)] & get_bit_one_buffer(i);
 }
 
 BitSet& BitSet::set(int i)
@@ -153,13 +151,16 @@ constexpr typename BitSet::buffer_type BitSet::get_bit_zero_buffer(int i)
 	return ~get_bit_one_buffer(i);
 }
 
-
 class BitMatrix :private BitSet {
 	const int row, col;
 public:
 	BitMatrix(int row_, int col_):row(row_),col(col_),BitSet(row_*col_){}
 	BitMatrix(const BitMatrix& bm):row(bm.row),col(bm.col),BitSet(bm){}
 	BitMatrix(BitMatrix&& bm)noexcept:row(bm.row),col(bm.col),BitSet(bm){}
+	~BitMatrix() = default;
+
+	BitMatrix& operator=(const BitMatrix&) = delete;
+	BitMatrix& operator=(BitMatrix&&) = delete;
 
 	inline bool test(int i,int j)const {
 		return BitSet::test(get_index(i, j));
