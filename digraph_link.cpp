@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdio>
 #include <utility>
+#include <stdint.h>
 #include <algorithm>
 
 /// <summary>
@@ -12,9 +13,8 @@ class Graph {
 public:
 	struct Edge;
 	struct Vertex {
-		V vdata;
 		Edge* adj;
-		Vertex() :vdata(), adj(nullptr) {}
+		Vertex() :adj(nullptr) {}
 	};
 	struct Edge {
 		E edata;
@@ -36,6 +36,8 @@ public:
 		return const_cast<Graph*>(this)->first_edge(v);
 	}
 
+	Edge* get_edge(int u, int v);
+
 	inline int get_size()const {
 		return size;
 	}
@@ -46,6 +48,8 @@ public:
 	Graph(Graph&&) = delete;
 	Graph& operator=(const Graph&) = delete;
 	Graph& operator=(Graph&&) = delete;
+
+	void show()const;
 
 protected:
 	int size;
@@ -101,6 +105,17 @@ typename Graph<V, E>::Edge* Graph<V, E>::first_edge(int v)
 }
 
 template<typename V, typename E>
+typename Graph<V, E>::Edge* Graph<V, E>::get_edge(int u, int v)
+{
+	auto* e = first_edge(u);
+	for (; e; e = e->link) {
+		if (e->to == v)
+			return e;
+	}
+	return nullptr;
+}
+
+template<typename V, typename E>
 void Graph<V, E>::get_indegrees(int* indeg) const
 {
 	std::fill(indeg, indeg + size, 0);
@@ -110,5 +125,17 @@ void Graph<V, E>::get_indegrees(int* indeg) const
 			indeg[e->to]++;
 			e = e->link;
 		}
+	}
+}
+
+template<typename V, typename E>
+void Graph<V, E>::show() const
+{
+	for (int v = 0; v < size; v++) {
+		std::cout << "node: " << v << ", ";
+		for (auto* e = first_edge(v); e; e = e->link) {
+			std::cout << "(" << e->to << ", " << e->edata << "), ";
+		}
+		std::cout << std::endl;
 	}
 }

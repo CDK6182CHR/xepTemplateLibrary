@@ -1,6 +1,7 @@
-
 #include <iostream>
 #include <utility>
+#include <algorithm>
+
 
 /// <summary>
 /// 教材 p.362
@@ -32,10 +33,18 @@ public:
 	Edge* add_edge(int from, int to, const E& data);
 	void remove_edge(int from, int to);  //需要时实现
 
+	inline const Edge* first_edge(int v)const {
+		return vertices[v].outed;
+	}
 	inline Edge* first_edge(int v) {
 		return vertices[v].outed;
 	}
-	Edge* next_edge(int v, Edge* e);
+
+	Edge* next_edge(int v, const Edge* e);
+
+	const Edge* next_edge(int v, const Edge* e)const {
+		return const_cast<UniGraph*>(this)->next_edge(v, e);
+	}
 
 	inline int get_edge_neighbour(int u, const Edge* e)const {
 		return u == e->v1 ? e->v2 : e->v1;
@@ -74,7 +83,7 @@ UniGraph<V, E>::~UniGraph() noexcept
 {
 	//先按照出边顺序清除表
 	for (int i = 0; i < size; i++) {
-		auto e = vertices[i].outed;
+		Edge* e = vertices[i].outed;
 		if (e) {
 			auto e1 = next_edge(i, e);
 			while (e1) {
@@ -110,7 +119,7 @@ UniGraph<V, E>::add_edge(int from, int to, const E& data)
 }
 
 template<typename V, typename E>
-typename UniGraph<V,E>::Edge* UniGraph<V, E>::next_edge(int v, Edge* e)
+typename UniGraph<V, E>::Edge* UniGraph<V, E>::next_edge(int v, const Edge* e)
 {
 	if (v == e->v1) {
 		return e->path1;
@@ -128,7 +137,7 @@ typename UniGraph<V, E>::Edge*& UniGraph<V, E>::next_edge_ref(int v, Edge* e)
 }
 
 template<typename V, typename E>
-typename UniGraph<V,E>::Edge* UniGraph<V, E>::previous_edge(int v, Edge* e)
+typename UniGraph<V, E>::Edge* UniGraph<V, E>::previous_edge(int v, Edge* e)
 {
 	if (v == e->v1) {
 		return e->path2;
@@ -140,7 +149,7 @@ template<typename V, typename E>
 typename UniGraph<V, E>::Edge* UniGraph<V, E>::get_edge(int u, int v)
 {
 	auto* e = first_edge(u);
-	for (; e; e = next_edge(u,e)) {
+	for (; e; e = next_edge(u, e)) {
 		if ((e->v1 == v && e->v2 == u) || (e->v2 == v && e->v1 == u)) {
 			return e;
 		}
