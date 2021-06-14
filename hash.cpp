@@ -2,8 +2,6 @@
 /// 采用闭地址的Hash表，只允许插入和查找不允许删除。
 /// 线性寻址。
 /// </summary>
-/// <typeparam name="K"></typeparam>
-/// <typeparam name="T"></typeparam>
 template <typename K, typename T>
 class StaticHashMap {
 	const int maxsize;
